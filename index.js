@@ -5,7 +5,8 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
-
+// YXzb1XRq5WVMlfZZ
+// invoiceUser
 
 require('dotenv').config()
 
@@ -17,10 +18,28 @@ app.get('/', (req, res) => {
 })
 
 
+
+const uri = "mongodb+srv://invoiceUser:YXzb1XRq5WVMlfZZ@cluster0.ap4xy.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
 async function run() {
     try {
       await client.connect();
-     
+      const invoiceCollection = client.db('allinvoice').collection('invoice');
+      app.get('/billing-list', async (req, res) =>{
+        const query = {};
+        const result = await invoiceCollection.find(query).toArray();
+        res.send(result);
+      });
+
+      app.post('/add-billing', async(req, res) =>{
+        const newInvoice = req.body;
+        const result = await invoiceCollection.insertOne(newInvoice);
+    
+        res.send(result);
+      })
+
+
   
     } finally {
       
